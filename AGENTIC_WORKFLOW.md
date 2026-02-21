@@ -74,12 +74,13 @@ On tag pushes, the workflow also creates a GitHub Release and attaches the JAR.
 
 ## GitHub Agentic Workflows (gh-aw)
 
-This repository includes agentic workflow source files in `.github/workflows/*.md`.
+Agentic workflows have been removed from this repository because they require a `COPILOT_GITHUB_TOKEN` secret that is not configured.
 
-To enable them:
+If you wish to re-enable them:
 
-1. Install the GitHub CLI extension: `gh extension install github/gh-aw`
-2. Configure an engine secret (e.g. `COPILOT_GITHUB_TOKEN`) as described in the gh-aw docs.
-3. Compile markdown → lock files: `gh aw compile`
+1. Configure the `COPILOT_GITHUB_TOKEN` secret in your repository settings
+2. Install the GitHub CLI extension: `gh extension install github/gh-aw`
+3. Create agentic workflow source files in `.github/workflows/*.md`
+4. Compile markdown → lock files: `gh aw compile`
 
 This generates `.github/workflows/<name>.lock.yml` files which are what GitHub Actions actually runs. Commit both the `.md` and `.lock.yml` files.
