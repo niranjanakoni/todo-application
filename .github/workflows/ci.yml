@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (Maven)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build & test
+        working-directory: todo-backend
+        run: mvn -B -ntp clean verify
+
+  frontend:
+    name: Frontend (Node)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "18"
+          cache: npm
+          cache-dependency-path: todo-frontend/package-lock.json
+
+      - name: Install
+        working-directory: todo-frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Test
+        working-directory: todo-frontend
+        env:
+          CI: "true"
+        run: npm test -- --watchAll=false --passWithNoTests
+
+      - name: Build
+        working-directory: todo-frontend
+        run: npm run build
